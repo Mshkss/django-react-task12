@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from rest_framework.generics import ListAPIView
+from .models import Course
+from .serializer import CourseSerializer
+from rest_framework.permissions import AllowAny
 
-# Create your views here.
+
+class CourseListView(ListAPIView):
+    permission_classes = [AllowAny]  # <-- разрешить всем
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer

@@ -1,3 +1,4 @@
 from django.contrib import admin
+#from .models import user  # если у тебя кастомная модель
 
-# Register your models here.
+#admin.site.register(User)
