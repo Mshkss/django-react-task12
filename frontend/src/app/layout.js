@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
           <Link
             href="/courses_table"
             style={{
-              fontWeight: pathname.startsWith("/courses_table") ? "bold" : "normal",
+              fontWeight: pathname === "/courses_table" ? "bold" : "normal",
             }}
           >
             Все курсы [список]
@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
           <Link
             href="/profile"
             style={{
-              fontWeight: pathname.startsWith("/users") ? "bold" : "normal",
+              fontWeight: pathname === ("/profile") ? "bold" : "normal",
             }}
           >
             Профиль

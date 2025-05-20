@@ -12,7 +12,7 @@ export default function CourseList() {
     fetch("http://localhost:8000/api/courses/")
       .then((res) => res.json())
       .then((data) => {
-        setCourses(data);
+        setCourses(data.results || []); // <-- вот тут!
         const end = performance.now();
         setLoadTime((end - start).toFixed(1)); // миллисекунды
         setLoading(false); // 2. Устанавливаем состояние загрузки в false
@@ -25,6 +25,7 @@ export default function CourseList() {
   }
   return (
     <div>
+      <h2>Курсы: </h2>
       <ul>
         {courses.map((course) => (
           <li key={course.id}>

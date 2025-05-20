@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "corsheaders",
     ### Custom apps
     "apps.users",
-	"apps.courses",
+    "apps.courses",
 ]
 
 MIDDLEWARE = [
@@ -177,6 +177,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 55,  # количество объектов на страницу по умолчанию
 }
 
 # Email backend for password reset
