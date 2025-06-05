@@ -39,24 +39,21 @@ export default function CourseList() {
             }}
           >
             <h3>{course.title}</h3>
-            {/* next/image с оптимизацией */}
-            {course.image && (
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  maxWidth: "300px",
-                  height: "200px",
-                  marginBottom: "1rem",
-                }}
-              >
-                <Image
-                  src={`${course.image}`}
+            {course.image_preview && (
+              <a href={course.image} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={course.image_preview}
                   alt={course.title}
-                  fill
-                  style={{ objectFit: "cover", borderRadius: "6px" }}
+                  style={{
+                    width: 200,
+                    height: 200,
+                    objectFit: "cover",
+                    borderRadius: 8,
+                    display: "block",
+                    marginBottom: "1rem",
+                  }}
                 />
-              </div>
+              </a>
             )}
             <p>{course.description}</p>
             <p>Цена: {course.price}</p>

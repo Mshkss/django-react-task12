@@ -193,3 +193,5 @@ frontend/.idea/
 # OS-specific files
 frontend/.DS_Store
 frontend/Thumbs.db
+
+/media/*

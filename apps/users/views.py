@@ -27,5 +27,6 @@ class ProfileView(APIView):
             {
                 "username": user.username,
                 "id": user.id,
+                "can_edit_course_image": user.has_perm("courses.can_edit_course_image"),
             }
         )
