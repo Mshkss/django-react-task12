@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .permissions import CanEditCourseImage
 from PIL import Image, ImageDraw, ImageFont
+from rest_framework.parsers import MultiPartParser
+import xml.etree.ElementTree as ET
+from rest_framework import status
 
 
 class CourseListView(ListAPIView):
@@ -66,3 +69,34 @@ def add_watermark(image_path, watermark_text="А+Б"):
     watermarked = Image.alpha_composite(image, watermark)
     watermarked = watermarked.convert("RGB")
     watermarked.save(image_path)
+
+
+class CourseXMLImportView(APIView):
+    permission_classes = [IsAuthenticated, CanEditCourseImage]
+    parser_classes = [MultiPartParser]
+
+    def post(self, request):
+        xml_file = request.FILES.get("file")
+        if not xml_file:
+            return Response({"error": "Файл не передан"}, status=400)
+        try:
+            tree = ET.parse(xml_file)
+            root = tree.getroot()
+            imported = 0
+            for course_elem in root.findall("course"):
+                title = course_elem.findtext("title")
+                description = course_elem.findtext("description")
+                price = course_elem.findtext("price")
+                duration = course_elem.findtext("duration")
+                # Можно добавить обработку image, если нужно
+                if title and price and duration:
+                    Course.objects.create(
+                        title=title,
+                        description=description or "",
+                        price=price,
+                        duration=duration,
+                    )
+                    imported += 1
+            return Response({"imported": imported}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)

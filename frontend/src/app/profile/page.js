@@ -179,6 +179,43 @@ export default function ProfilePage() {
           Удалить изображение
         </button>
       )}
+      {canEditImage && (
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem("access");
+            const formData = new FormData();
+            formData.append("file", e.target.elements.xmlfile.files[0]);
+            const res = await fetch(
+              "http://localhost:8000/api/courses/import/xml/",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+              }
+            );
+            if (res.ok) {
+              setUploadStatus("Импорт завершён");
+            } else {
+              setUploadStatus("Ошибка импорта");
+            }
+          }}
+          style={{ marginTop: "2rem" }}
+        >
+          <h2>Импортировать курсы из XML</h2>
+          <input
+            type="file"
+            name="xmlfile"
+            accept=".xml"
+            required
+            style={{ marginRight: "1rem" }}
+          />
+          <button type="submit">Импортировать</button>
+          <div>{uploadStatus}</div>
+        </form>
+      )}
     </main>
   );
 }
