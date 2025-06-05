@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class RegisterView(APIView):
-    permission_classes = [AllowAny]  # <-- разрешить всем
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -27,5 +27,6 @@ class ProfileView(APIView):
             {
                 "username": user.username,
                 "id": user.id,
+                "can_edit_course_image": user.has_perm("courses.can_edit_course_image"),
             }
         )

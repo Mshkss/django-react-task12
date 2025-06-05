@@ -6,6 +6,10 @@ export default function ProfilePage() {
   const [username, setUsername] = useState(null);
   const [needLogin, setNeedLogin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [canEditImage, setCanEditImage] = useState(false); // право на редактирование
+  const [courseId, setCourseId] = useState(""); // id курса для примера
+  const [imageFile, setImageFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState("");
 
   // Функция для получения профиля
   const fetchProfile = async (token) => {
@@ -55,6 +59,8 @@ export default function ProfilePage() {
       setUsername(data.username || data.name || "Пользователь");
       setNeedLogin(false);
       setLoading(false);
+      // Проверяем право (например, приходит с профилем или отдельным запросом)
+      setCanEditImage(data.can_edit_course_image || false);
     } else {
       setNeedLogin(true);
       setLoading(false);
@@ -64,6 +70,36 @@ export default function ProfilePage() {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  // Функция для отправки изображения
+  const handleImageUpload = async (e) => {
+    e.preventDefault();
+    if (!imageFile || !courseId) {
+      setUploadStatus("Выберите курс и файл.");
+      return;
+    }
+    setUploadStatus("Загрузка...");
+    const token = localStorage.getItem("access");
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    const res = await fetch(
+      `http://localhost:8000/api/courses/${courseId}/edit_image/`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+
+    if (res.ok) {
+      setUploadStatus("Изображение успешно обновлено!");
+    } else {
+      setUploadStatus("Ошибка загрузки изображения");
+    }
+  };
 
   if (loading) {
     return (
@@ -97,6 +133,89 @@ export default function ProfilePage() {
       >
         Выйти
       </button>
+
+      {/* Форма для загрузки изображения курса */}
+      {canEditImage && (
+        <form onSubmit={handleImageUpload} style={{ marginTop: "2rem" }}>
+          <h2>Загрузить новое изображение курса</h2>
+          <input
+            type="text"
+            placeholder="ID курса"
+            value={courseId}
+            onChange={(e) => setCourseId(e.target.value)}
+            style={{ marginRight: "1rem" }}
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files[0])}
+            style={{ marginRight: "1rem" }}
+          />
+          <button type="submit">Загрузить</button>
+          <div>{uploadStatus}</div>
+        </form>
+      )}
+      {canEditImage && (
+        <button
+          onClick={async () => {
+            const token = localStorage.getItem("access");
+            const res = await fetch(
+              `http://localhost:8000/api/courses/${courseId}/edit_image/`,
+              {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            if (res.ok) {
+              setUploadStatus("Изображение удалено");
+            } else {
+              setUploadStatus("Ошибка удаления изображения");
+            }
+          }}
+          disabled={!courseId}
+        >
+          Удалить изображение
+        </button>
+      )}
+      {canEditImage && (
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem("access");
+            const formData = new FormData();
+            formData.append("file", e.target.elements.xmlfile.files[0]);
+            const res = await fetch(
+              "http://localhost:8000/api/courses/import/xml/",
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+              }
+            );
+            if (res.ok) {
+              setUploadStatus("Импорт завершён");
+            } else {
+              setUploadStatus("Ошибка импорта");
+            }
+          }}
+          style={{ marginTop: "2rem" }}
+        >
+          <h2>Импортировать курсы из XML</h2>
+          <input
+            type="file"
+            name="xmlfile"
+            accept=".xml"
+            required
+            style={{ marginRight: "1rem" }}
+          />
+          <button type="submit">Импортировать</button>
+          <div>{uploadStatus}</div>
+        </form>
+      )}
     </main>
   );
 }

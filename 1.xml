@@ -1,0 +1,14 @@
+<courses>
+    <course>
+        <title>Курс 1</title>
+        <description>Описание курса 1</description>
+        <price>1000.00</price>
+        <duration>40</duration>
+    </course>
+    <course>
+        <title>Курс 2</title>
+        <description>Описание курса 2</description>
+        <price>2000.00</price>
+        <duration>60</duration>
+    </course>
+</courses>

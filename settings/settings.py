@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-zbu9%egp28xsm2_j%^2b&tw%fg76)ws&$kqh-5ujh8x3gznnuy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["164.215.68.12", "localhost"]
 
 
 # Application definition
@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    ### Custom apps
+    #    my apps :
     "apps.users",
-	"apps.courses",
+    "apps.courses",
 ]
 
 MIDDLEWARE = [
@@ -124,39 +124,35 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "handlers": {
-#         "file": {
-#             "level": "DEBUG",
-#             "class": "logging.FileHandler",
-#             "filename": BASE_DIR / "debug.log",
-#         },
-#         "console": {
-#             "level": "DEBUG",
-#             "class": "logging.StreamHandler",
-#         },
-#     },
-#     "loggers": {
-#         "": {
-#             "handlers": ["file", "console"],
-#             "level": "DEBUG",
-#             "propagate": True,
-#         },
-#     },
-# }
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": BASE_DIR / "debug.log",
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["file", "console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Адрес вашего фронтенда
+    "http://localhost:3000",  # react app
     "http://localhost:8080",
-    "http://localhost:8001",
-    "http://localhost:8002",
-    "http://localhost:8003",
-    "http://localhost:8004",
-    "http://localhost:8005",
-    "http://localhost:8006",
-    "http://localhost:8081",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -177,6 +173,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 55,  # количество объектов на страницу по умолчанию
 }
 
 # Email backend for password reset
